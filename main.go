@@ -35,6 +35,7 @@ func main() {
 	app.Use(compress.New(compress.Config{
 		Level: compress.LevelBestSpeed, // 1
 	}))
+
 	app.Get("/metrics", monitor.New(monitor.Config{Title: "My Service Metrics Page"}))
 
 	// controllers
@@ -53,8 +54,9 @@ func main() {
 	// 404
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"message": "Sorry you are lost",
 			"error": fiber.Map{
-				"type":    "api",
+				"code":    fiber.StatusNotFound,
 				"message": c.Path() + " does not exist",
 			},
 		})
