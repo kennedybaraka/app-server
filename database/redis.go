@@ -16,6 +16,11 @@ var (
 	Client        *redis.Client
 )
 
+func init() {
+	// database stuff
+	ConnectToRedis()
+}
+
 func ConnectToRedis() {
 
 	redisAddr := fmt.Sprintf("%s:%s", REDISHOST, REDISPORT)

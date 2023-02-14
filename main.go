@@ -1,13 +1,14 @@
 package main
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/kennedybaraka/app-server/config"
-	"github.com/kennedybaraka/app-server/database"
 	"github.com/kennedybaraka/app-server/routes"
 	"gorm.io/gorm"
 )
@@ -16,12 +17,6 @@ var (
 	PORT     = config.Env("PORT")
 	Database *gorm.DB
 )
-
-func init() {
-	// database stuff
-	database.ConnectToPostgreSql()
-	database.ConnectToRedis()
-}
 
 func main() {
 	// fiber initialization
@@ -54,11 +49,10 @@ func main() {
 	// 404
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "Sorry you are lost",
-			"error": fiber.Map{
-				"code":    fiber.StatusNotFound,
-				"message": c.Path() + " does not exist",
-			},
+			"error":     "Route not found",
+			"status":    fiber.StatusNotFound,
+			"detail":    "The route " + c.Path() + " does not exist in this API",
+			"timestamp": time.Now(),
 		})
 	})
 

@@ -1,0 +1,100 @@
+// package main
+
+// import (
+// 	"fmt"
+
+// 	"github.com/jinzhu/gorm"
+// 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+// )
+
+// // StoreOwner is the model for store owner
+// type StoreOwner struct {
+// 	gorm.Model
+// 	Name   string
+// 	Stores []Store
+// }
+
+// // Store is the model for store
+// type Store struct {
+// 	gorm.Model
+// 	Name         string
+// 	StoreOwnerID uint
+// 	Products     []Product
+// }
+
+// // Product is the model for product
+// type Product struct {
+// 	gorm.Model
+// 	Name       string
+// 	StoreID    uint
+// 	CategoryID uint
+// 	BrandID    uint
+// }
+
+// // Category is the model for category
+// type Category struct {
+// 	gorm.Model
+// 	Name     string
+// 	Products []Product
+// }
+
+// // Brand is the model for brand
+// type Brand struct {
+// 	gorm.Model
+// 	Name     string
+// 	Products []Product
+// }
+
+// func code() {
+// 	db, err := gorm.Open("sqlite3", "test.db")
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
+// 	defer db.Close()
+
+// 	// Migrate the schema
+// 	db.AutoMigrate(&StoreOwner{}, &Store{}, &Product{}, &Category{}, &Brand{})
+
+// 	// Create store owner
+// 	storeOwner := StoreOwner{Name: "John Doe"}
+// 	db.Create(&storeOwner)
+
+// 	// Create store
+// 	store := Store{Name: "Super Mart", StoreOwnerID: storeOwner.ID}
+// 	db.Create(&store)
+
+// 	// Create category
+// 	category := Category{Name: "Fruit"}
+// 	db.Create(&category)
+
+// 	// Create brand
+// 	brand := Brand{Name: "Fresh Fruits"}
+// 	db.Create(&brand)
+
+// 	// Create product
+// 	product := Product{Name: "Banana", StoreID: store.ID, CategoryID: category.ID, BrandID: brand.ID}
+// 	db.Create(&product)
+
+// 	// Get store owner and its stores
+// 	var owner StoreOwner
+// 	db.Preload("Stores").First(&owner, storeOwner.ID)
+// 	fmt.Println("Store owner:", owner.Name)
+// 	for _, store := range owner.Stores {
+// 		fmt.Println("Store:", store.Name)
+// 		// Get store products
+// 		var products []Product
+// 		db.Model(&store).Related(&products)
+// 		for _, product := range products {
+// 			fmt.Println("Product:", product.Name)
+// 			// Get product category
+// 			var category Category
+// 			db.First(&category, product.CategoryID)
+// 			fmt.Println("Category:", category.Name)
+// 			// Get product brand
+// 			var brand Brand
+// 			db.First(&brand, product.BrandID)
+// 			fmt.Println("Brand:", brand.Name)
+// 		}
+// 	}
+// }

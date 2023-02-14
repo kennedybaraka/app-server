@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/kennedybaraka/app-server/config"
+	"github.com/kennedybaraka/app-server/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -18,6 +19,12 @@ var (
 	Data       *gorm.DB
 )
 
+func init() {
+	// database stuff
+	ConnectToPostgreSql()
+
+}
+
 func ConnectToPostgreSql() {
 	databaseUrl := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s", PGUSER, PGPASSWORD, PGHOST, PGPORT, PGDATABASE)
 	c, err := gorm.Open(postgres.Open(databaseUrl), &gorm.Config{})
@@ -28,4 +35,8 @@ func ConnectToPostgreSql() {
 	Data = c
 	fmt.Println("[#] DATABASE CONNECTION HAS BEEN ESTABLISHED.")
 
+	err = Data.AutoMigrate(&models.Store{}, &models.Product{}, &models.Brand{}, &models.Category{}, &models.Address{}, &models.Client{}, &models.Owner{}, &models.Review{})
+	if err != nil {
+		log.Println(err)
+	}
 }
