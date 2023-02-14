@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/kennedybaraka/app-server/database"
 	"github.com/kennedybaraka/app-server/models"
+	"github.com/kennedybaraka/app-server/utils/email"
 	"github.com/kennedybaraka/app-server/utils/encryption"
 	"github.com/kennedybaraka/app-server/utils/validation"
 	"gorm.io/gorm"
@@ -64,6 +65,11 @@ func (o *owner) CreateOwner(c *fiber.Ctx) error {
 	// save to db
 	owner.OwnerPassword = hash
 	result := o.db.Omit("store_id").Create(&owner)
+
+	// send email
+	// go func() {
+	email.SendVerificationEmail(owner.OwnerEmail)
+	// }()
 
 	if err := result.Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
